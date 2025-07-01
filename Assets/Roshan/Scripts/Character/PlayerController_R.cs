@@ -44,21 +44,28 @@ public class PlayerController_R : MonoBehaviour
     }
 
     private void Move()
+{
+    // Convert 2D input to 3D
+    Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
+
+    // Clamp to avoid faster diagonal movement
+    if (move.magnitude > 1f)
+        move.Normalize();
+
+    // Make movement relative to camera
+    move = Camera.main.transform.TransformDirection(move);
+    move.y = 0f; // Keep movement horizontal
+
+    float speed = isSprinting ? sprintSpeed : walkSpeed;
+
+    // Move using CharacterController
+    controller.SimpleMove(move * speed);
+
+    // Rotate to face movement direction
+    if (move.sqrMagnitude > 0.01f)
     {
-        // Convert 2D input to 3D
-        Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
-
-        // Clamp to avoid faster diagonal movement
-        if (move.magnitude > 1f)
-            move.Normalize();
-
-        // Make movement relative to player's rotation
-        move = transform.TransformDirection(move);
-
-        // Choose speed
-        float speed = isSprinting ? sprintSpeed : walkSpeed;
-
-        // Move using CharacterController
-        controller.SimpleMove(move * speed);
+        Quaternion targetRotation = Quaternion.LookRotation(move);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
     }
+}
 }
