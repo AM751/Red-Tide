@@ -8,6 +8,10 @@ public class PlayerController_R : MonoBehaviour
     public float walkSpeed = 3f;
     public float sprintSpeed = 6f;
 
+    [Header("Interaction Control")]
+    [Tooltip("If false, player cannot move. Use this to disable movement during interactions like zoom.")]
+    public bool canMove = true;
+
     private Vector2 moveInput;
     private bool isSprinting;
 
@@ -19,11 +23,11 @@ public class PlayerController_R : MonoBehaviour
         controller = GetComponent<CharacterController>();
         inputActions = new PlayerInputActions_R();
 
-        // Setup Move action
+        // Bind movement input
         inputActions.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         inputActions.Player.Move.canceled += ctx => moveInput = Vector2.zero;
 
-        // Setup Sprint action
+        // Bind sprint input
         inputActions.Player.Sprint.performed += ctx => isSprinting = true;
         inputActions.Player.Sprint.canceled += ctx => isSprinting = false;
     }
@@ -40,32 +44,34 @@ public class PlayerController_R : MonoBehaviour
 
     private void Update()
     {
+        if (!canMove) return;
+
         Move();
     }
 
     private void Move()
-{
-    // Convert 2D input to 3D
-    Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
-
-    // Clamp to avoid faster diagonal movement
-    if (move.magnitude > 1f)
-        move.Normalize();
-
-    // Make movement relative to camera
-    move = Camera.main.transform.TransformDirection(move);
-    move.y = 0f; // Keep movement horizontal
-
-    float speed = isSprinting ? sprintSpeed : walkSpeed;
-
-    // Move using CharacterController
-    controller.SimpleMove(move * speed);
-
-    // Rotate to face movement direction
-    if (move.sqrMagnitude > 0.01f)
     {
-        Quaternion targetRotation = Quaternion.LookRotation(move);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+        // Convert 2D input to 3D
+        Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
+
+        // Normalize if diagonal
+        if (move.magnitude > 1f)
+            move.Normalize();
+
+        // Make movement relative to camera direction
+        move = Camera.main.transform.TransformDirection(move);
+        move.y = 0f; // Flatten to horizontal plane
+
+        float speed = isSprinting ? sprintSpeed : walkSpeed;
+
+        // Apply movement
+        controller.SimpleMove(move * speed);
+
+        // Rotate to face movement direction
+        if (move.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(move);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+        }
     }
-}
 }
