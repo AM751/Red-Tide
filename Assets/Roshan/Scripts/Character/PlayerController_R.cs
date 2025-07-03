@@ -9,8 +9,11 @@ public class PlayerController_R : MonoBehaviour
     public float sprintSpeed = 6f;
 
     [Header("Interaction Control")]
-    [Tooltip("If false, player cannot move. Use this to disable movement during interactions like zoom.")]
     public bool canMove = true;
+
+    [Header("Inventory")]
+    public Inventory_R inventory;    // Reference to Inventory_R
+    public float pickupRange = 2f;
 
     private Vector2 moveInput;
     private bool isSprinting;
@@ -23,13 +26,13 @@ public class PlayerController_R : MonoBehaviour
         controller = GetComponent<CharacterController>();
         inputActions = new PlayerInputActions_R();
 
-        // Bind movement input
         inputActions.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         inputActions.Player.Move.canceled += ctx => moveInput = Vector2.zero;
 
-        // Bind sprint input
         inputActions.Player.Sprint.performed += ctx => isSprinting = true;
         inputActions.Player.Sprint.canceled += ctx => isSprinting = false;
+
+        inputActions.Player.Pickup.performed += ctx => TryPickup();
     }
 
     private void OnEnable()
@@ -45,33 +48,55 @@ public class PlayerController_R : MonoBehaviour
     private void Update()
     {
         if (!canMove) return;
-
         Move();
     }
 
     private void Move()
     {
-        // Convert 2D input to 3D
         Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
 
-        // Normalize if diagonal
         if (move.magnitude > 1f)
             move.Normalize();
 
-        // Make movement relative to camera direction
-        move = Camera.main.transform.TransformDirection(move);
-        move.y = 0f; // Flatten to horizontal plane
+        if (Camera.main != null)
+        {
+            move = Camera.main.transform.TransformDirection(move);
+            move.y = 0f;
+        }
 
         float speed = isSprinting ? sprintSpeed : walkSpeed;
-
-        // Apply movement
         controller.SimpleMove(move * speed);
 
-        // Rotate to face movement direction
         if (move.sqrMagnitude > 0.01f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(move);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+        }
+    }
+
+    private void TryPickup()
+    {
+        if (inventory == null) return;
+
+        Collider[] hits = Physics.OverlapSphere(transform.position, pickupRange);
+        foreach (var hit in hits)
+        {
+            if (hit.CompareTag("Pickup"))
+            {
+                var pickupItem = hit.GetComponent<Pickupitem_R>();
+                if (pickupItem != null)
+                {
+                    inventory.AddItem(pickupItem.itemName, pickupItem.itemPrefab);
+                    Debug.Log($"Picked up {pickupItem.itemName} with prefab {pickupItem.itemPrefab}");
+                }
+                else
+                {
+                    inventory.AddItem(hit.name, null);
+                    Debug.LogWarning("No Pickupitem_R script on picked object: " + hit.name);
+                }
+                Destroy(hit.gameObject);
+                break;
+            }
         }
     }
 }
