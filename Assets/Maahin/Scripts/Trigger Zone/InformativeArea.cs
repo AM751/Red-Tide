@@ -11,7 +11,8 @@ public class InformativeArea : MonoBehaviour
 
     private bool isPlayerInside;
 
-    private bool hasToolCame;
+    private bool hasToolCame; //To check whether the tool appeared or not on the screen.
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -29,7 +30,16 @@ public class InformativeArea : MonoBehaviour
         infoCanvas.enabled = true;
         infoText.text = "Press T to bring uo the Tool for fishing.";
     }
-    
+
+    void Update()
+    {
+        if (isPlayerInside == true && hasToolCame == false && Input.GetKeyDown(KeyCode.T))
+        {
+            hasToolCame = true;
+            theTool.SetActive(true);
+            infoCanvas.enabled = false;
+        }
+    }
 
     private void OnTriggerEnter(Collider infoZone)
     { 
