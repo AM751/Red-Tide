@@ -1096,9 +1096,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""38ebb6b4-5ad0-44bf-a9af-cf058c6fa91a"",
                     ""path"": ""<Gamepad>/leftStick"",
-                    ""interactions"": ""Hold"",
+                    ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Gamepad"",
                     ""action"": ""JoystickMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
