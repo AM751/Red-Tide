@@ -990,6 +990,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Gameplay",
+            "id": "c75d1df1-aa6d-4ccb-8014-45d00239fdc3",
+            "actions": [
+                {
+                    "name": "JoystickMove",
+                    "type": "Value",
+                    "id": "cd4d35d2-eb1a-4cc3-93e4-714c0a41c1de",
+                    "expectedControlType": "Stick",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "38ebb6b4-5ad0-44bf-a9af-cf058c6fa91a",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "JoystickMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [
