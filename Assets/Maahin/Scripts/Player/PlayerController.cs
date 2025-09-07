@@ -54,11 +54,11 @@
           // {
           //     playerRB.position += Vector3.right * Time.deltaTime * movementSpeed;
           // } 
-          // if (Input.GetKey(KeyCode.Space) && isPlayerGrounded)
-          // {
-          //     playerRB.AddForce(Vector3.up * playerJump, ForceMode.Impulse);
-          //     isPlayerGrounded = false;
-          // }
+          if (Input.GetKey(KeyCode.Space) && isPlayerGrounded)
+          {
+              playerRB.AddForce(Vector3.up * playerJump, ForceMode.Impulse);
+              isPlayerGrounded = false;
+          }
       }
 
       private void OnCollisionEnter(Collision collision)
