@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7378788718379785883}
   - component: {fileID: 1779853757851527456}
   - component: {fileID: 6890101482689185957}
-  - component: {fileID: 417992877028647848}
+  - component: {fileID: 5243576120908695344}
   m_Layer: 0
   m_Name: Bait Red
   m_TagString: Bait
@@ -103,13 +103,13 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &417992877028647848
+--- !u!114 &5243576120908695344
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -123,3 +123,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   redBait: {fileID: 7215203683260984210}
   greenBait: {fileID: 0}
+  fishingRod: {fileID: 0}

@@ -5,6 +5,8 @@ public class PlayerInteraction : MonoBehaviour
 {
     [SerializeField] public GameObject redBait;
     [SerializeField] public GameObject greenBait;
+
+    [SerializeField] public GameObject fishingRod;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -19,17 +21,26 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
+        
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Player interacted with the Bait");
+            if (fishingRod != null || redBait != null || greenBait != null)
+            {
+                Debug.Log("You need a FishingRod!!!");
+            }
         }
     }
+    
 
     private void OnCollisionExit(Collision other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Player stopped the interaction with Bait");
+            if (fishingRod == null || redBait == null || greenBait == null)
+            {
+                Debug.Log("Player collected the Bait");   
+            }
+            
         }
     }
 }
